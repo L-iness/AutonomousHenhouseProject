@@ -92,7 +92,6 @@ uint8_t state = INIT;
 
 unsigned NIGHT_DURATION = 9;
 unsigned DAY_DURATION = 8;
-unsigned SLEEP_LOOP = 600000; // To reduce if you want to debug and see what's happening in the serial monitor
 
 
 /****************************************************************************
@@ -172,7 +171,7 @@ void loop() {
   Serial.print(now.second(), DEC);
   Serial.println();
 
-  // Default : Closing the hatch for the hens safety
+  // Default : Closing the hatch for the hens' safety
   Serial.println("Close the hatch");
   closeTheHatch();
 
@@ -186,7 +185,13 @@ void loop() {
 
   Serial.println("Entering Low power");
 
-  LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);  
+  // Waiting for 9 hours until sunrise
+  while (i<4050) {
+    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+    i++;  
+  }
+ 
+  
 
 
   /*  
@@ -221,9 +226,13 @@ void loop() {
   Serial.println("Wait for 8 hours");
   waitXhour(DAY_DURATION , VERBOSE);
 
-  LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);  
 
-
+  // Waiting for 8 hours until sunset
+  while (i<3600) {
+    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);  
+    i++;
+  }
+  
   
   
   /*  
@@ -312,7 +321,7 @@ void waitUntilLimit(int limitHour, int limitMinute, int v, String Message)
   unsigned long currentTime_unix;
   unsigned long limit_unix;
   long          diff = 1;
-//  unsigned long waitDelay;
+  unsigned long waitDelay;
   
   currentTime      = rtc.now();
   currentTime_unix = currentTime.unixtime();
