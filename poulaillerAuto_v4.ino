@@ -171,95 +171,58 @@ void loop() {
   Serial.print(now.second(), DEC);
   Serial.println();
 
+
+   /*************
+   * CLOSING
+   *************/
   // Default : Closing the hatch for the hens' safety
   Serial.println("Close the hatch");
   closeTheHatch();
 
 
   // Puts Arduino into sleep mode to save the battery
-  Serial.println("Wait for 8 hours");
-  waitXhour(NIGHT_DURATION , VERBOSE);
-
+  
   Serial.println("Wait until sunrise");
   // wait until sunrise, verbose mode with "1" as argument, depends on the month of the year
 
+  Serial.println("Wait for 9 hours");
+  waitXhour(NIGHT_DURATION , VERBOSE);
+
+  
   Serial.println("Entering Low power");
 
-  // Waiting for 9 hours until sunrise
+  // Sleeping for 9 hours until sunrise
   while (i<4050) {
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
     i++;  
   }
  
-  
-
-
-  /*  
-   *   Different time of Sunrise in function of the month of the year
-   */
    
-  if (now.month() == 01 or now.month() == 02) {
-    waitUntilLimit(SUNRISE_HOUR_1 , SUNRISE_MINUTE_1, VERBOSE, "Sunrise");
-  }
-  else if (now.month() == 03 or now.month() == 04) {
-     waitUntilLimit(SUNRISE_HOUR_2 , SUNRISE_MINUTE_2, VERBOSE, "Sunrise");
-  }
-  else if (now.month() == 05 or now.month() == 06) {
-     waitUntilLimit(SUNRISE_HOUR_3 , SUNRISE_MINUTE_3, VERBOSE, "Sunrise");
-  }
-  else if (now.month() == 07 or now.month() == 0x8) {
-     waitUntilLimit(SUNRISE_HOUR_4 , SUNRISE_MINUTE_4, VERBOSE, "Sunrise");
-  }
-  else if (now.month() == 0x9 or now.month() == 10) {
-     waitUntilLimit(SUNRISE_HOUR_5 , SUNRISE_MINUTE_5, VERBOSE, "Sunrise");
-  }
-  else if (now.month() == 11 or now.month() == 12) {
-     waitUntilLimit(SUNRISE_HOUR_6 , SUNRISE_MINUTE_6, VERBOSE, "Sunrise");
-  }
+  waitSunrise();// Different time of Sunrise in function of the month of the year
 
 
-
-   
+  /*************
+   * OPENING
+   ************/
   Serial.println("Open the hatch");
   openTheHatch();
 
+  Serial.println("Wait until sunset");
+  // wait until sunset, verbose mode with "1" as argument, depends on the month of the year
+
   Serial.println("Wait for 8 hours");
   waitXhour(DAY_DURATION , VERBOSE);
-
-
-  // Waiting for 8 hours until sunset
+  
+  Serial.println("Entering Low power");
+  
+  // Sleeping for 8 hours until sunset
   while (i<3600) {
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);  
     i++;
   }
-  
-  
-  
-  /*  
-   *   Different time of Sunset in function of the month of the year
-   */
 
-  Serial.println("Wait until sunset");
-  // wait until sunset, verbose mode with "1" as argument, depends on the month of the year
-  if (now.month() == 01 or now.month() == 02) {
-    waitUntilLimit(SUNSET_HOUR_1 , SUNSET_MINUTE_1, VERBOSE, "Sunset");
-  }
-  else if (now.month() == 03 or now.month() == 04) {
-     waitUntilLimit(SUNSET_HOUR_2 , SUNSET_MINUTE_2, VERBOSE, "Sunset");
-  }
-  else if (now.month() == 05 or now.month() == 06) {
-     waitUntilLimit(SUNSET_HOUR_3 , SUNSET_MINUTE_3, VERBOSE, "Sunset");
-  }
-  else if (now.month() == 07 or now.month() == 0x8) {
-     waitUntilLimit(SUNSET_HOUR_4 , SUNSET_MINUTE_4, VERBOSE, "Sunset");
-  }
-  else if (now.month() == 0x9 or now.month() == 10) {
-     waitUntilLimit(SUNSET_HOUR_5 , SUNSET_MINUTE_5, VERBOSE, "Sunset");
-  }
-  else if (now.month() == 11 or now.month() == 12) {
-     waitUntilLimit(SUNSET_HOUR_6 , SUNSET_MINUTE_6, VERBOSE, "Sunset");
-  }
 
+  waitSunset(); // Different time of Sunset in function of the month of the year
   
 
 }
@@ -384,8 +347,71 @@ void waitUntilLimit(int limitHour, int limitMinute, int v, String Message)
 
 
 
+  /*  
+   *   Different time of Sunrise in function of the month of the year
+   */
+
+void waitSunrise(){
+
+  DateTime now = rtc.now();
+   
+  if (now.month() == 01 or now.month() == 02) {
+    waitUntilLimit(SUNRISE_HOUR_1 , SUNRISE_MINUTE_1, VERBOSE, "Sunrise");
+  }
+  else if (now.month() == 03 or now.month() == 04) {
+     waitUntilLimit(SUNRISE_HOUR_2 , SUNRISE_MINUTE_2, VERBOSE, "Sunrise");
+  }
+  else if (now.month() == 05 or now.month() == 06) {
+     waitUntilLimit(SUNRISE_HOUR_3 , SUNRISE_MINUTE_3, VERBOSE, "Sunrise");
+  }
+  else if (now.month() == 07 or now.month() == 0x8) {
+     waitUntilLimit(SUNRISE_HOUR_4 , SUNRISE_MINUTE_4, VERBOSE, "Sunrise");
+  }
+  else if (now.month() == 0x9 or now.month() == 10) {
+     waitUntilLimit(SUNRISE_HOUR_5 , SUNRISE_MINUTE_5, VERBOSE, "Sunrise");
+  }
+  else if (now.month() == 11 or now.month() == 12) {
+     waitUntilLimit(SUNRISE_HOUR_6 , SUNRISE_MINUTE_6, VERBOSE, "Sunrise");
+  }
+
+}
 
 
+
+
+
+
+  /*  
+   *   Different time of Sunset in function of the month of the year
+   */
+
+
+void waitSunset(){
+  
+  DateTime now = rtc.now();
+
+  if (now.month() == 01 or now.month() == 02) {
+    waitUntilLimit(SUNSET_HOUR_1 , SUNSET_MINUTE_1, VERBOSE, "Sunset");
+  }
+  else if (now.month() == 03 or now.month() == 04) {
+     waitUntilLimit(SUNSET_HOUR_2 , SUNSET_MINUTE_2, VERBOSE, "Sunset");
+  }
+  else if (now.month() == 05 or now.month() == 06) {
+     waitUntilLimit(SUNSET_HOUR_3 , SUNSET_MINUTE_3, VERBOSE, "Sunset");
+  }
+  else if (now.month() == 07 or now.month() == 0x8) {
+     waitUntilLimit(SUNSET_HOUR_4 , SUNSET_MINUTE_4, VERBOSE, "Sunset");
+  }
+  else if (now.month() == 0x9 or now.month() == 10) {
+     waitUntilLimit(SUNSET_HOUR_5 , SUNSET_MINUTE_5, VERBOSE, "Sunset");
+  }
+  else if (now.month() == 11 or now.month() == 12) {
+     waitUntilLimit(SUNSET_HOUR_6 , SUNSET_MINUTE_6, VERBOSE, "Sunset");
+  }
+
+
+}
+  
 
 /****************************************************************************
  * 
