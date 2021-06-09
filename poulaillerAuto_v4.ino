@@ -185,11 +185,10 @@ void loop() {
   Serial.println("Wait until sunrise");
   // wait until sunrise, verbose mode with "1" as argument, depends on the month of the year
 
-  Serial.println("Wait for 9 hours");
-  waitXhour(NIGHT_DURATION , VERBOSE);
-
   
   Serial.println("Entering Low power");
+
+  i = 0;
 
   // Sleeping for 9 hours until sunrise
   while (i<4050) {
@@ -209,11 +208,10 @@ void loop() {
 
   Serial.println("Wait until sunset");
   // wait until sunset, verbose mode with "1" as argument, depends on the month of the year
-
-  Serial.println("Wait for 8 hours");
-  waitXhour(DAY_DURATION , VERBOSE);
   
   Serial.println("Entering Low power");
+
+  i = 0;
   
   // Sleeping for 8 hours until sunset
   while (i<3600) {
